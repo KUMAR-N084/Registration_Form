@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: #000;
+            padding: 20px 40px;
+            border-bottom: 2px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #FF6B4E;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            background: #1C1C1E;
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: #FF6B4E;
+            border-color: #FF6B4E;
+        }
+        
+        .btn-export {
+            background: linear-gradient(90deg, #FF6B4E, #AB3366);
+            border: none;
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 78, 0.4);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #1C1C1E;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FF6B4E;
+        }
+        
+        .search-bar {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #333;
+            background: #1C1C1E;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: #FF6B4E;
+        }
+        
+        .table-container {
+            background: #1C1C1E;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #111;
+        }
+        
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+        }
+        
+        td {
+            padding: 15px 20px;
+            border-top: 1px solid #222;
+            font-size: 13px;
+        }
+        
+        tbody tr {
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #252525;
+        }
+        
+        .profile-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-adult {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+        
+        .badge-minor {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 12px;
+            border: none;
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #FF6B4E;
+        }
+        
+        .action-btn-delete {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .action-btn-delete:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+        
+        .pagination {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .pagination a, .pagination span {
+            padding: 8px 15px;
+            border-radius: 12px;
+            background: #1C1C1E;
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            border: 1px solid #333;
+        }
+        
+        .pagination a:hover {
+            background: #FF6B4E;
+            border-color: #FF6B4E;
+        }
+        
+        .pagination .active {
+            background: #FF6B4E;
+            border-color: #FF6B4E;
+        }
+        
+        .alert {
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #27ae60;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+        <div class="header-actions">
+            <span style="color: #888; font-size: 13px;">
+                <i class="fas fa-user"></i> {{ current_user.admin_username }}
+            </span>
+            <a href="{{ url_for('export_csv') }}" class="btn btn-export">
+                <i class="fas fa-file-csv"></i> Export CSV
+            </a>
+            <a href="{{ url_for('admin_logout') }}" class="btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <div class="value">{{ users.total }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>This Page</h3>
+                <div class="value">{{ users.items|length }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Current Page</h3>
+                <div class="value">{{ users.page }} / {{ users.pages }}</div>
+            </div>
+        </div>
+        
+        <div class="search-bar">
+            <form method="GET" style="display: flex; gap: 15px; flex: 1;">
+                <input type="text" name="search" placeholder="Search by name, username, email..." value="{{ search_query }}" autofocus>
+                <button type="submit" class="btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                {% if search_query %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Age</th>
+                        <th>Location</th>
+                        <th>Registered</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if users.items %}
+                        {% for user in users.items %}
+                        <tr>
+                            <td>
+                                <img src="{{ user.profile_photo }}" alt="{{ user.first_name }}" class="profile-thumb">
+                            </td>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.mobile }}</td>
+                            <td>
+                                <span class="badge {% if user.age >= 18 %}badge-adult{% else %}badge-minor{% endif %}">
+                                    {{ user.age }} yrs
+                                </span>
+                            </td>
+                            <td>{{ user.city }}, {{ user.state }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ url_for('view_user', user_id=user.id) }}" class="action-btn">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" 
+                                          onsubmit="return confirm('Delete this user?')" style="display: inline;">
+                                        <button type="submit" class="action-btn action-btn-delete">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9">
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>No users found</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if users.pages > 1 %}
+        <div class="pagination">
+            {% if users.has_prev %}
+                <a href="{{ url_for('admin_dashboard', page=users.prev_num, search=search_query) }}">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            {% endif %}
+            
+            {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    <a href="{{ url_for('admin_dashboard', page=page_num, search=search_query) }}" 
+                       class="{% if page_num == users.page %}active{% endif %}">
+                        {{ page_num }}
+                    </a>
+                {% else %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+            
+            {% if users.has_next %}
+                <a href="{{ url_for('admin_dashboard', page=users.next_num, search=search_query) }}">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: #7B4FA0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: #000;
+            border-radius: 30px;
+            padding: 50px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            border: 4px solid #111;
+        }
+        
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 8px;
+            margin-left: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 25px;
+            border-radius: 30px;
+            border: 1px solid transparent;
+            background: #1C1C1E;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            background: #252525;
+            border-color: #FF6B4E;
+            box-shadow: 0 0 10px rgba(255, 107, 78, 0.2);
+        }
+        
+        input::placeholder {
+            color: #555;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            margin-top: 10px;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 30px;
+            padding: 2px;
+            background: linear-gradient(90deg, #FF6B4E, #AB3366);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(90deg, #FF6B4E, #AB3366);
+            box-shadow: 0 5px 20px rgba(255, 107, 78, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .alert {
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #27ae60;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .back-link a {
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s;
+        }
+        
+        .back-link a:hover {
+            color: #FF6B4E;
+        }
+        
+        .icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .icon i {
+            font-size: 60px;
+            color: #FF6B4E;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <h2>Admin Login</h2>
+        <p class="subtitle">Secure Access Portal</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Admin username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+            </div>
+            
+            <button type="submit" class="btn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">
+                <i class="fas fa-arrow-left"></i> Back to Registration
+            </a>
+        </div>
+    </div>
+</body>
+</html>
