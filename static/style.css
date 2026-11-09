@@ -1,0 +1,629 @@
+/* ================= RESET & CORE THEME ================= */
+:root {
+    /* Page Background (Presentation Purple) */
+    --page-bg: #7B4FA0; 
+    
+    /* Form Container (Phone Screen Black) */
+    --form-bg: #000000;
+    --input-bg: #1C1C1E;
+    
+    /* Neon Accents from Image */
+    --accent-orange: #FF6B4E;
+    --accent-purple: #AB3366;
+    --accent-gradient: linear-gradient(90deg, #FF6B4E, #AB3366);
+    
+    /* Text Colors */
+    --text-white: #FFFFFF;
+    --text-muted: #888888;
+    --text-placeholder: #555555;
+    
+    /* Borders */
+    --border-color: #333333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================= ANIMATED GRADIENT BACKGROUND ================= */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #7B4FA0, #AB3366, #FF6B4E, #5D3A7F);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--text-white);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ================= SECRET ADMIN ACCESS BUTTON ================= */
+.admin-secret-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    z-index: 999;
+}
+
+.admin-secret-btn:hover {
+    background: rgba(255, 107, 78, 0.2);
+    color: var(--accent-orange);
+    border-color: var(--accent-orange);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 107, 78, 0.3);
+}
+
+/* ================= CONTAINER (Dark Mode Card) ================= */
+.container {
+    background: var(--form-bg);
+    width: 100%;
+    max-width: 850px; /* Wider to accommodate 2x2 grid */
+    border-radius: 40px; /* Large rounded corners like the phone */
+    padding: 40px 50px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5); /* Deep shadow */
+    position: relative;
+    border: 6px solid #111; /* Subtle bezel effect */
+    animation: slideUp 0.5s ease-out;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= TYPOGRAPHY & WAVE DECORATION ================= */
+h2 {
+    text-align: center;
+    margin-bottom: 45px;
+    color: var(--text-white);
+    font-size: 32px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* The Neon Orange Wave Underline */
+h2::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 20px;
+    margin: 10px auto 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='20' viewBox='0 0 120 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 30 20 60 10 T 120 10' stroke='%23FF6B4E' stroke-width='3' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ================= PROFILE PHOTO SECTION ================= */
+.profile-photo-section {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.photo-preview {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    border: 2px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--input-bg);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.photo-preview:hover {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 15px rgba(255, 107, 78, 0.3);
+}
+
+.photo-preview i {
+    font-size: 40px;
+    color: var(--text-muted);
+}
+
+.photo-preview span {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-preview.has-image {
+    border-style: solid;
+    border-color: var(--accent-orange);
+}
+
+/* Hide file input and default upload button text */
+#photoInput { display: none; }
+.photo-upload-btn { display: none; } 
+.photo-info { display: none; }
+
+/* ================= GRID SYSTEM (2x2) ================= */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+    gap: 20px 30px; /* Vertical gap 20px, Horizontal gap 30px */
+    margin-bottom: 25px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 5px; /* Spacing handled by grid gap mostly */
+}
+
+/* ================= INPUTS & LABELS ================= */
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-left: 15px; /* Align with pill curve */
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.required::after {
+    content: " *";
+    color: var(--accent-orange);
+}
+
+/* Pill Shaped Inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 25px;
+    border-radius: 30px; /* Pill Shape */
+    border: 1px solid transparent;
+    background: var(--input-bg);
+    color: var(--text-white);
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+/* Placeholder Color */
+input::placeholder, textarea::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* Focus State - Neon Glow */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    background: #252525;
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 10px rgba(255, 107, 78, 0.2);
+}
+
+/* Validation Styling */
+input.valid, select.valid {
+    border-right: 4px solid #00E676; /* Green indicator on right */
+}
+
+input.invalid, select.invalid {
+    border: 1px solid #FF5252;
+    animation: shake 0.4s ease;
+}
+
+textarea {
+    border-radius: 20px; /* Slightly less rounded for text area */
+    resize: vertical;
+    min-height: 100px;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ================= PASSWORD TOGGLE ================= */
+.password-wrapper { position: relative; }
+
+.toggle-password {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.3s;
+}
+
+.toggle-password:hover { color: var(--text-white); }
+
+/* ================= RADIO BUTTONS (Gender) ================= */
+.radio-group {
+    display: flex;
+    gap: 10px;
+    background: var(--input-bg);
+    padding: 5px;
+    border-radius: 30px;
+    margin-top: 5px;
+}
+
+.radio-label {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-label input { display: none; }
+
+.radio-label:hover { color: var(--text-white); }
+
+/* Selected State */
+.radio-label:has(input:checked) {
+    background: #333;
+    color: var(--accent-orange);
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.radio-label span { margin: 0; }
+
+/* ================= CHECKBOXES ================= */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    margin: 10px 0 20px 10px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    margin-right: 12px;
+    position: relative;
+    cursor: pointer;
+    background: transparent;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ================= ERROR MESSAGES ================= */
+.error-message {
+    display: block;
+    color: #FF5252;
+    font-size: 11px;
+    margin-top: 5px;
+    margin-left: 15px;
+    min-height: 16px;
+    font-weight: 600;
+}
+
+/* Success icon hidden for cleaner look */
+.success-icon { display: none; }
+
+/* ================= BUTTONS & SOCIAL ================= */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    color: var(--text-white);
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Gradient Border Effect for Button */
+.submit-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    padding: 2px;
+    background: var(--accent-gradient);
+    -webkit-mask: 
+       linear-gradient(#fff 0 0) content-box, 
+       linear-gradient(#fff 0 0);
+    mask: 
+       linear-gradient(#fff 0 0) content-box, 
+       linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: var(--accent-gradient);
+    box-shadow: 0 5px 20px rgba(255, 107, 78, 0.4);
+    transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submit-btn i { margin-right: 8px; }
+
+/* Social Login - Circular Icons */
+.social {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.or-text {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.social button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--input-bg);
+    color: var(--text-white);
+    font-size: 0; /* Hide text */
+    margin: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social button i {
+    font-size: 20px;
+}
+
+.social button:hover {
+    background: var(--text-white);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* ================= MODAL & EXTRAS (FIXED) ================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto; /* Enable scrolling */
+    padding: 20px; /* Add padding for mobile */
+}
+
+.modal.show { display: flex; }
+
+.modal-box {
+    background: #111;
+    padding: 35px;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh; /* Limit height */
+    overflow-y: auto; /* Enable scrolling inside modal */
+    text-align: center;
+    border: 1px solid #333;
+    color: white;
+    position: relative;
+    margin: auto; /* Center vertically */
+}
+
+.modal-header h3 { 
+    color: var(--accent-orange); 
+    margin: 15px 0;
+    font-size: 24px;
+}
+
+.modal-header i { 
+    font-size: 50px; 
+    color: #00E676; 
+}
+
+/* Fixed Modal Photo Size */
+.modal-profile-photo {
+    width: 120px;
+    height: 120px;
+    margin: 20px auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--input-bg);
+}
+
+.modal-profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Prevent stretching */
+}
+
+.confirm-table {
+    width: 100%;
+    margin: 20px 0;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+
+.confirm-table th {
+    background: #000;
+    color: var(--accent-orange);
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+}
+
+.confirm-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    text-align: left;
+}
+
+.confirm-table td:first-child { 
+    color: var(--text-muted); 
+    font-weight: 600; 
+    width: 40%; 
+}
+
+.confirm-table td:last-child {
+    color: var(--text-white);
+    word-break: break-word; /* Prevent overflow */
+}
+
+.close-btn {
+    padding: 12px 30px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.close-btn:hover { 
+    background: var(--accent-orange); 
+    border-color: var(--accent-orange);
+}
+
+/* Age Display & Parental Consent */
+.age-display-container {
+    background: #111;
+    border: 1px solid #333;
+    padding: 8px 15px;
+    border-radius: 10px;
+    margin-top: 8px;
+    display: inline-block;
+}
+.age-value { color: var(--accent-orange); font-weight: bold; }
+
+.parental-consent {
+    grid-column: 1 / -1; /* Span full width */
+    background: #151515;
+    border: 1px solid var(--accent-orange);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.parental-consent h3 { color: var(--accent-orange); font-size: 14px; margin-bottom: 10px; }
+.parental-consent p { color: #aaa; font-size: 13px; margin-bottom: 15px; }
+.hidden { display: none; }
+
+footer {
+    margin-top: 30px;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 20px;
+        max-width: 100%;
+    }
+    
+    /* Stack grid on mobile */
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .radio-group { flex-wrap: wrap; }
+    
+    .modal-box {
+        padding: 25px;
+        max-height: 85vh;
+    }
+    
+    .admin-secret-btn {
+        bottom: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+    }
+}
