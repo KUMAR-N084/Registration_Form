@@ -489,7 +489,7 @@ def get_countries():
         try:
             response = http_requests.get(
                 "https://api.countrystatecity.in/v1/countries", 
-                headers={"API-Key": api_key},
+                headers={"X-CSCAPI-KEY": api_key},
                 timeout=5
             )
             if response.status_code == 200:
@@ -515,7 +515,7 @@ def get_states(country_id):
         try:
             response = http_requests.get(
                 f"https://api.countrystatecity.in/v1/countries/{country_id}/states", 
-                headers={"API-Key": api_key},
+                headers={"X-CSCAPI-KEY": api_key},
                 timeout=5
             )
             if response.status_code == 200:
@@ -539,7 +539,7 @@ def get_cities(country_id, state_id):
         try:
             response = http_requests.get(
                 f"https://api.countrystatecity.in/v1/countries/{country_id}/states/{state_id}/cities", 
-                headers={"API-Key": api_key},
+                headers={"X-CSCAPI-KEY": api_key},
                 timeout=5
             )
             if response.status_code == 200:
