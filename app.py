@@ -195,15 +195,7 @@ def register():
     try:
         data = request.json
         
-        # Log incoming data for debugging
-        print(f"\n{'='*60}")
-        print(f"📥 Registration Request Received")
-        print(f"{'='*60}")
-        print(f"Name: {data.get('firstName')} {data.get('lastName')}")
-        print(f"Username: {data.get('username')}")
-        print(f"Email: {data.get('email')}")
-        print(f"Mobile: {data.get('mobile')}")
-        
+        # Do not log submitted personal information.
         # Validate required fields
         required_fields = ['firstName', 'lastName', 'username', 'email', 'mobile', 
                           'dob', 'gender', 'address', 'postalCode', 'country', 
@@ -216,16 +208,16 @@ def register():
         
         # Server-side validation
         if not validate_email(data['email']):
-            return jsonify({'success': False, 'message': f'Invalid email format: {data["email"]}'}), 400
+            return jsonify({'success': False, 'message': 'Invalid email format'}), 400
         
         if not validate_mobile(data['mobile']):
-            return jsonify({'success': False, 'message': f'Invalid mobile number: {data["mobile"]}'}), 400
+            return jsonify({'success': False, 'message': 'Invalid mobile number'}), 400
         
         if not validate_name(data['firstName']):
-            return jsonify({'success': False, 'message': f'Invalid first name format: {data["firstName"]}'}), 400
+            return jsonify({'success': False, 'message': 'Invalid first name format'}), 400
         
         if not validate_name(data['lastName']):
-            return jsonify({'success': False, 'message': f'Invalid last name format: {data["lastName"]}'}), 400
+            return jsonify({'success': False, 'message': 'Invalid last name format'}), 400
         
         # Check if username or email already exists
         existing_user = User.query.filter_by(username=data['username']).first()
@@ -285,16 +277,10 @@ def register():
             'username': new_user.username
         }), 201
         
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        print(f"\n{'='*60}")
-        print(f"❌ REGISTRATION ERROR")
-        print(f"{'='*60}")
-        print(f"Error: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        print(f"{'='*60}\n")
-        return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
+        logger.exception('Registration failed')
+        return jsonify({'success': False, 'message': 'Unable to complete registration. Please try again.'}), 500
 
 @app.route('/api/validate', methods=['POST'])
 def api_validate():
