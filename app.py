@@ -10,11 +10,18 @@ import csv
 import io
 import base64
 import re
+import logging
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
-# Configuration
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production')
+# Configuration: keep secrets outside source control.
+secret_key = os.environ.get('SECRET_KEY')
+if not secret_key:
+    raise RuntimeError('SECRET_KEY is missing. Copy .env.example to .env and set a unique secret key.')
+app.config['SECRET_KEY'] = secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///registration.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -22,6 +29,11 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max
 
 # Disable caching in development
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('COOKIE_SECURE', 'false').lower() == 'true'
+logging.basicConfig(level=os.environ.get('LOG_LEVEL', 'INFO'))
+logger = logging.getLogger(__name__)
 
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -200,52 +212,41 @@ def register():
         
         missing_fields = [field for field in required_fields if field not in data or not data[field]]
         if missing_fields:
-            print(f"❌ Missing fields: {', '.join(missing_fields)}")
             return jsonify({'success': False, 'message': f'Missing required fields: {", ".join(missing_fields)}'}), 400
         
         # Server-side validation
         if not validate_email(data['email']):
-            print(f"❌ Invalid email: {data['email']}")
             return jsonify({'success': False, 'message': f'Invalid email format: {data["email"]}'}), 400
         
         if not validate_mobile(data['mobile']):
-            print(f"❌ Invalid mobile: {data['mobile']}")
             return jsonify({'success': False, 'message': f'Invalid mobile number: {data["mobile"]}'}), 400
         
         if not validate_name(data['firstName']):
-            print(f"❌ Invalid first name: {data['firstName']}")
             return jsonify({'success': False, 'message': f'Invalid first name format: {data["firstName"]}'}), 400
         
         if not validate_name(data['lastName']):
-            print(f"❌ Invalid last name: {data['lastName']}")
             return jsonify({'success': False, 'message': f'Invalid last name format: {data["lastName"]}'}), 400
         
         # Check if username or email already exists
         existing_user = User.query.filter_by(username=data['username']).first()
         if existing_user:
-            print(f"❌ Username already exists: {data['username']}")
             return jsonify({'success': False, 'message': f'Username "{data["username"]}" is already taken'}), 400
         
         existing_email = User.query.filter_by(email=data['email']).first()
         if existing_email:
-            print(f"❌ Email already registered: {data['email']}")
             return jsonify({'success': False, 'message': f'Email "{data["email"]}" is already registered'}), 400
         
         # Parse DOB and calculate age
         try:
             dob = datetime.strptime(data['dob'], '%Y-%m-%d').date()
         except ValueError as e:
-            print(f"❌ Invalid date format: {data['dob']}")
             return jsonify({'success': False, 'message': 'Invalid date of birth format'}), 400
         
         age = calculate_age(dob)
         
         if age < 13:
-            print(f"❌ Age too young: {age} years")
             return jsonify({'success': False, 'message': 'Must be at least 13 years old to register'}), 400
         
-        print(f"✓ All validations passed")
-        print(f"✓ Creating user record...")
         
         # Create new user
         new_user = User(
@@ -275,12 +276,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         
-        print(f"✅ SUCCESS! User registered:")
-        print(f"   ID: {new_user.id}")
-        print(f"   Username: {new_user.username}")
-        print(f"   Email: {new_user.email}")
-        print(f"   Age: {new_user.age} years")
-        print(f"{'='*60}\n")
+        logger.info('User registration completed (user_id=%s)', new_user.id)
         
         return jsonify({
             'success': True, 
@@ -709,33 +705,14 @@ def add_header(response):
 # ==================== INITIALIZATION ====================
 
 def init_db():
-    """Initialize database and create default admin"""
+    """Create database tables without creating a predictable administrator account."""
     with app.app_context():
         db.create_all()
-        
-        # Create default admin if doesn't exist
-        if not Admin.query.filter_by(admin_username='admin').first():
-            default_admin = Admin(
-                admin_username='admin',
-                admin_email='admin@example.com',
-                password_hash=generate_password_hash('admin123')
-            )
-            db.session.add(default_admin)
-            db.session.commit()
-            print("\n" + "="*60)
-            print("DEFAULT ADMIN ACCOUNT CREATED")
-            print("="*60)
-            print("Username: admin")
-            print("Password: admin123")
-            print("⚠️  CHANGE THIS PASSWORD IMMEDIATELY!")
-            print("="*60 + "\n")
+
 
 if __name__ == '__main__':
     init_db()
-    print("\n" + "="*60)
-    print("🚀 FLASK SERVER STARTING")
-    print("="*60)
-    print("📍 Registration Form: http://localhost:5000")
-    print("🔐 Admin Login: http://localhost:5000/admin/login")
-    print("="*60 + "\n")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
+    host = os.environ.get('HOST', '127.0.0.1')
+    port = int(os.environ.get('PORT', '5000'))
+    app.run(debug=debug_mode, host=host, port=port)
