@@ -193,7 +193,11 @@ def index():
 def register():
     """Handle user registration"""
     try:
-        data = request.json
+        if not request.is_json:
+            return jsonify({'success': False, 'message': 'JSON request body is required.'}), 415
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify({'success': False, 'message': 'Invalid registration data.'}), 400
         
         # Do not log submitted personal information.
         # Validate required fields
