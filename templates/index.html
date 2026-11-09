@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* Loading Screen Styles */
+.loader-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeOut 0.5s ease 2.5s forwards;
+}
+
+.loader-text {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.walking-person {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 30px;
+    animation: walk 1s infinite;
+}
+
+.person-body {
+    width: 30px;
+    height: 50px;
+    background: #fff;
+    margin: 0 auto;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+}
+
+.person-head {
+    width: 25px;
+    height: 25px;
+    background: #fff;
+    border-radius: 50%;
+    margin: 0 auto 5px;
+}
+
+.person-leg {
+    width: 8px;
+    height: 30px;
+    background: #fff;
+    position: absolute;
+    bottom: -30px;
+    border-radius: 0 0 5px 5px;
+}
+
+.leg-left {
+    left: 5px;
+    animation: legMove 0.5s infinite;
+}
+
+.leg-right {
+    right: 5px;
+    animation: legMove 0.5s infinite 0.25s;
+}
+
+@keyframes walk {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes legMove {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-30deg); }
+}
+
+.loader-bar {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.loader-progress {
+    height: 100%;
+    background: white;
+    animation: progress 2.5s ease forwards;
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Main Content */
+.main-form {
+    opacity: 0;
+    animation: fadeIn 0.5s ease 2.5s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loader-text { font-size: 1.5rem; }
+    .walking-person { width: 80px; height: 80px; }
+}
+</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- LOADING ANIMATION -->
+<div class="loader-screen">
+    <h1 class="loader-text">Registration Portal</h1>
+    <div class="walking-person">
+        <div class="person-head"></div>
+        <div class="person-body">
+            <div class="person-leg leg-left"></div>
+            <div class="person-leg leg-right"></div>
+        </div>
+    </div>
+    <div class="loader-bar">
+        <div class="loader-progress"></div>
+    </div>
+</div>
+
+<!-- MAIN FORM -->
+<div class="main-form">
+    <a href="{{ url_for('admin_login') }}" class="admin-secret-btn" title="Admin Access">
+        <i class="fas fa-shield-alt"></i>
+    </a>
+
+    <div class="container">
+        <h2 id="formTitle">Create Account</h2>
+
+        <div class="profile-photo-section">
+            <div class="photo-preview" id="photoPreview" onclick="document.getElementById('photoInput').click()">
+                <i class="fas fa-user-circle"></i>
+                <span>Click to Upload</span>
+            </div>
+            <input type="file" id="photoInput" accept="image/png, image/jpeg, image/jpg, image/svg+xml">
+            <span class="error-message" id="photoError"></span>
+        </div>
+
+        <form id="registrationForm" novalidate>
+            <div class="grid">
+                <div class="form-group">
+                    <label for="firstName" class="required">First Name</label>
+                    <input type="text" id="firstName" placeholder="John" data-rule="name">
+                    <span class="error-message" id="firstNameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName" class="required">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Doe" data-rule="name">
+                    <span class="error-message" id="lastNameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="required">Username</label>
+                    <input type="text" id="username" placeholder="john_doe@123" data-rule="username">
+                    <span class="error-message" id="usernameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="required">Email</label>
+                    <input type="email" id="email" placeholder="example@email.com" data-rule="email">
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile" class="required">Mobile Number</label>
+                    <input type="tel" id="mobile" maxlength="10" placeholder="10-digit number" data-rule="mobile">
+                    <span class="error-message" id="mobileError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob" class="required">Date of Birth</label>
+                    <input type="date" id="dob" data-rule="dob" max="">
+                    <span class="error-message" id="dobError"></span>
+                    <div id="ageDisplayContainer" class="age-display-container" style="display: none;">
+                        <span class="age-label">Your Age: </span>
+                        <span id="ageDisplay" class="age-value">0</span>
+                        <span class="age-label"> years</span>
+                    </div>
+                </div>
+
+                <div id="parentalConsentSection" class="parental-consent hidden">
+                    <h3>Parental/Guardian Consent Required</h3>
+                    <p>You must be 18 or older to register. Please provide parental/guardian information.</p>
+                    
+                    <div class="form-group">
+                        <label for="guardianName" class="required">Parent/Guardian Name</label>
+                        <input type="text" id="guardianName" placeholder="Full name" data-rule="name">
+                        <span class="error-message" id="guardianNameError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guardianEmail" class="required">Parent/Guardian Email</label>
+                        <input type="email" id="guardianEmail" placeholder="guardian@email.com" data-rule="email">
+                        <span class="error-message" id="guardianEmailError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guardianPhone" class="required">Parent/Guardian Phone</label>
+                        <input type="tel" id="guardianPhone" maxlength="10" placeholder="10-digit number" data-rule="mobile">
+                        <span class="error-message" id="guardianPhoneError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="guardianConsent">
+                            <span>I confirm that I am the parent/guardian and consent to this registration</span>
+                        </label>
+                        <span class="error-message" id="guardianConsentError"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postalCode" class="required">Postal/Pin Code</label>
+                    <input type="text" id="postalCode" maxlength="6" placeholder="6-digit code" data-rule="postal">
+                    <span class="error-message" id="postalCodeError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="country" class="required">Country</label>
+                    <select id="country" data-rule="required">
+                        <option value="">Select Country</option>
+                    </select>
+                    <span class="error-message" id="countryError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="state" class="required">State</label>
+                    <select id="state" data-rule="required" disabled>
+                        <option value="">Select State</option>
+                    </select>
+                    <span class="error-message" id="stateError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="required">City</label>
+                    <select id="city" data-rule="required" disabled>
+                        <option value="">Select City</option>
+                    </select>
+                    <span class="error-message" id="cityError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="education" class="required">Education</label>
+                    <select id="education" data-rule="required">
+                        <option value="">Select Education</option>
+                        <option value="High School">High School</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Bachelor's Degree">Bachelor's Degree</option>
+                        <option value="Master's Degree">Master's Degree</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                    <span class="error-message" id="educationError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="required">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Strong password" data-rule="password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="required">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Repeat password" data-rule="confirmPassword">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Gender</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="gender" value="Male">
+                        <span>Male</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="gender" value="Female">
+                        <span>Female</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="gender" value="Other">
+                        <span>Other</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="gender" value="Prefer not to say">
+                        <span>Prefer not to say</span>
+                    </label>
+                </div>
+                <span class="error-message" id="genderError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="address" class="required">Address</label>
+                <textarea id="address" maxlength="200" placeholder="Full address" data-rule="address"></textarea>
+                <span class="error-message" id="addressError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="securityQuestion" class="required">Security Question</label>
+                <select id="securityQuestion" data-rule="required">
+                    <option value="">Select a question</option>
+                    <option value="pet">What is your pet's name?</option>
+                    <option value="teacher">Your favorite teacher?</option>
+                    <option value="city">City you were born in?</option>
+                </select>
+                <span class="error-message" id="securityQuestionError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="securityAnswer" class="required">Answer</label>
+                <input type="text" id="securityAnswer" placeholder="Your answer" data-rule="securityAnswer">
+                <span class="error-message" id="securityAnswerError"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="terms">
+                    <span>I agree to the Terms & Conditions</span>
+                </label>
+                <span class="error-message" id="termsError"></span>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+
+        <div class="social">
+            <p class="or-text">Or sign up with</p>
+            <button class="social-btn google"><i class="fab fa-google"></i></button>
+            <button class="social-btn facebook"><i class="fab fa-facebook-f"></i></button>
+            <button class="social-btn twitter"><i class="fab fa-x-twitter"></i></button>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <i class="fas fa-check-circle"></i>
+                <h3>Registration Successful!</h3>
+            </div>
+            <div class="modal-profile-photo" id="modalPhoto"></div>
+            <table class="confirm-table" id="confirmTable"></table>
+            <button class="close-btn" id="closeModal">Close</button>
+        </div>
+    </div>
+
+    <footer>© 2025 Registration Form</footer>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
